@@ -8,36 +8,20 @@ private:
     int p;
     int q;
     void reduce();
-    void AddValueToText(string& text, int value) const;
+    void addvalue (string& text, int value) const;
 
 public:
 
     Rational() = default;
-    Rational(const int& p, const int& q = 1);
+    Rational(const int p, const int q = 1);
 
-    void Init(const int& p, const int& q);
-    string ToString() const;
-    void Read();
-    friend Rational MakeRational(const int& p, const int& q);
-
-    bool Less(const Rational& second) const;
-    bool Equal(const Rational& second) const;
-    bool Grater(const Rational& second) const;
-
-    Rational Add(const Rational& second) const;
-    Rational Sub(const Rational& second) const;
-    Rational Mul(const Rational& second) const;
-    Rational Div(const Rational& second) const;
-
-    void Display() const;
-};
-
-
-void Rational::reduce() {
-    if (this->p == 0) {
-        this->q = 1;
+    void set_q (const int q)
+    {
+        return this->q;
     }
-    else {
+
+    void reduce() {
+       
         int oldUp = abs(this->p);
         int oldDown = abs(this->q);
         while (oldDown != 0 && oldUp != 0) {
@@ -54,156 +38,117 @@ void Rational::reduce() {
         }
         this->p /= oldUp + oldDown;
         this->q /= oldUp + oldDown;
-    }
-}
-
-
-void Rational::AddValueToText(string& text, int value) const {
-    string temp;
-    int ost;
-    while (value != 0) {
-        ost = value % 10;
-        temp += char('0' + ost);
-        value -= ost;
-        value /= 10;
+    
     }
 
-    for (int i = temp.size() - 1; i >= 0; --i) {
-        text += temp[i];
+
+    void addvalue (string& text, int value) const {
+       
+        int ost;
+        while (value != 0) {
+            ost = value % 10;
+            temp += ost;
+            value -= ost;
+            value /= 10;
+        }
+        
+        string temp;
+
+        for (int i = temp.size() - 1; i >= 0; --i) {
+            text += temp[i];
+        }
     }
-}
 
 
-string Rational::ToString() const {
-    string text;
-    AddValueToText(text, this->p);
-    text += '/';
-    AddValueToText(text, this->q);
-    return text;
-}
+    stringstrem Rational::ToString() const {
+        string text;
+        addvalue (text, this->p);
+        text += '/';
+        addvalue (text, this->q);
+        return text;
+    }
 
 
-void Rational::Init(const int& p, const int& q) {
-    if (q != 0) {
+    void Init(const int& p, const int& q) {
+        if (q != 0) {
+            this->p = p;
+            this->q = q;
+            reduce();
+        }
+    }
+
+
+
+    Rational::Rational(const int& p, const int& q) {
         this->p = p;
         this->q = q;
-        reduce();
-    }
-}
-
-
-void Rational::Read() {
-    char* string = new char[13];
-    cin >> string;
-    cout << endl;
-    char* key;
-    bool flag = false;
-    for (size_t i = 0; i < strlen(string); ++i) {
-        if (string[i] == '/') {
-            flag = true;
-            break;
-        }
-    }
-    if (flag) {
-        char* f_string = new char[13];
-        char* s_string = new char[13];
-        size_t index;
-        for (index = 0; string[index] != '/'; ++index) {
-            f_string[index] = string[index];
-        }
-        int i = 0;
-        for (++index; index < strlen(string); ++index && ++i) {
-            s_string[i] = string[index];
-        }
-        this->p = int(strtoll(f_string, &key, 10));
-        this->q = int(strtoll(s_string, &key, 10));
         this->reduce();
-        delete[]f_string;
-        delete[]s_string;
     }
-    else {
-        this->p = int(strtoll(string, &key, 10));
-        this->q = 1;
+
+
+    bool Less(const Rational& second) const {
+        int ans1= (((double(this->p)*double(second.q)) / (double(this->q)*double(second.q)))
+        int ans2= (((double(second.p)*double(this->q)) / (double(second.q)*double(this->q)))
+
+        return  ans1 < ans2; 
     }
-    delete[]string;
-}
 
 
-Rational::Rational(const int& p, const int& q) {
-    this->p = p;
-    this->q = q;
-    this->reduce();
-}
-
-
-bool Rational::Less(const Rational& second) const {
-    return ((double(this->p) / double(this->q)) < (double(second.p) / double(second.q)));
-}
-
-
-bool Rational::Equal(const Rational& second) const {
-    return (!(this->Less(second)) && !(second.Less(*this)));
-}
-
-
-bool Rational::Grater(const Rational& second) const {
-    return !(this->Less(second) || this->Equal(second));
-}
-
-
-Rational Rational::Add(const Rational& second) const {
-    if (second.p == 0) {
-        return *this;
+    bool =Equal(const Rational& second) const {
+        return (!(this->Less(second)) && !(second.Less(*this)));
     }
-    else {
-        return Rational(this->p * second.q + this->q * second.p, this->q * second.q);
+
+
+    bool Grater(const Rational& second) const {
+        return !(this->Less(second) || this->Equal(second));
     }
-}
 
 
-Rational Rational::Mul(const Rational& second) const {
-    return Rational(this->p * second.p, this->q * second.q);
-}
-
-
-Rational Rational::Sub(const Rational& second) const {
-    if (second.p == 0) {
-        return *this;
+    Rational Add(const Rational& second) const {
+        
+            return Rational(this->p * second.q + this->q * second.p, this->q * second.q);
+        
     }
-    else {
-        return Rational(this->p * second.q - this->q * second.p, this->q * second.q);
+
+
+    Rational Mul(const Rational& second) const {
+        return Rational(this->p * second.p, this->q * second.q);
     }
-}
 
 
-Rational Rational::Div(const Rational& second) const {
-    if (second.p != 0) {
-        Rational result(this->p * second.q, this->q * second.p);
-        return result;
+    Rational Sub(const Rational& second) const {
+       
+            return Rational(this->p * second.q - this->q * second.p, this->q * second.q);
+        
     }
-}
 
 
-void Rational::Display() const {
-    cout << this->p;
-    if (this->q != 1) {
-        cout << '/' << this->q;
+    Rational Div(const Rational& second) const {
+        if (second.p != 0) {
+            Rational result(this->p * second.q, this->q * second.p);
+            return result;
+        }
     }
-    cout << endl;
-}
 
 
-Rational MakeRational(const int& p, const int& q) {
-    return { p, q };
-}
+    void Display() const {
+        cout << this->p;
+        if (this->q != 1) {
+            cout << '/' << this->q;
+        }
+        cout << endl;
+    }
+
+
+    Rational MakeRational(const int& p, const int& q) {
+        return { p, q };
+    }
+};
 
 
 int main() {
     Rational a(1, 2);
-
-    Rational b{};
-    b.Read();
-
+   
     Rational c{};
     c.Init(3, 5);
 
